@@ -52,5 +52,12 @@ public class BookPage {
     @FindBy (xpath ="(//span[@class=\"title\"])[1]")
     public WebElement Dashboard;
 
+    @FindBy (xpath ="//a[@id=\"navbarDropdown\"]")
+    public WebElement logout1;
+
+    @FindBy (xpath ="//div[@class=\"dropdown-divider\"]")
+    public WebElement logout2;
+
+
 
 }
