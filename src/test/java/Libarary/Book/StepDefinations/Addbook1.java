@@ -3,6 +3,7 @@ package Libarary.Book.StepDefinations;
 import Libarary.Book.Pages.BookPage;
 import Libarary.Book.Pages.LogInPage;
 import Libarary.Book.Utilities.ConfigurationReader;
+import Libarary.Book.Utilities.DB_Util;
 import Libarary.Book.Utilities.Driver;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -35,15 +36,8 @@ public class Addbook1 {
 
     @Given("Librarian enters valid email and password and click sign in.")
     public void librarian_enters_valid_email_and_password_and_click_sign_in() {
-        loginPage.username.sendKeys(ConfigurationReader.getProperty("username"));
-        loginPage.password.sendKeys(ConfigurationReader.getProperty("password"));
-        loginPage.submit.click();
-        Driver.getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-
-        String actualTitle = Driver.getDriver().getTitle();
-        String expectedTitle = "Library";
-        wait.until(ExpectedConditions.titleIs("Library"));
-        Assert.assertEquals("Title verification Failed", expectedTitle, actualTitle);
+        loginPage.logIn();
+        loginPage.tileVerify();
     }
 
     @When("Librarian clicks Books module")
@@ -61,18 +55,7 @@ public class Addbook1 {
 
     @When("Librarian enter bookName , ISBN , Year, Author and Description")
     public void librarian_enter_book_name_isbn_year_author_and_description() {
-        wait.until(ExpectedConditions.visibilityOf(bookPage.bookName));
-        bookPage.bookName.sendKeys(ConfigurationReader.getProperty("bookname"));
-        wait.until(ExpectedConditions.visibilityOf(bookPage.ISBN));
-        bookPage.ISBN.sendKeys(ConfigurationReader.getProperty("isbn"));
-        wait.until(ExpectedConditions.visibilityOf(bookPage.Year));
-        bookPage.Year.sendKeys(ConfigurationReader.getProperty("year"));
-        wait.until(ExpectedConditions.visibilityOf(bookPage.Author));
-        bookPage.Author.sendKeys(ConfigurationReader.getProperty("author"));
-        Select bookCategory = new Select(driver.findElement(By.xpath("//select[@id=\"book_group_id\"]")));
-        bookCategory.selectByVisibleText(ConfigurationReader.getProperty("bookcategory"));
-        wait.until(ExpectedConditions.visibilityOf(bookPage.Description));
-        bookPage.Description.sendKeys(ConfigurationReader.getProperty("description"));
+        bookPage.addBookInfo();
 
     }
 
@@ -85,11 +68,6 @@ public class Addbook1 {
 
     @Then("verify a new book is added")
     public void verify_a_new_book_is_added() throws SQLException, InterruptedException {
-        wait.until(ExpectedConditions.visibilityOf(bookPage.Dashboard));
-        bookPage.Dashboard.click();
-        wait.until(ExpectedConditions.visibilityOf(bookPage.Bookcount));
-        String actualCount= (bookPage.Bookcount).getText();
-        System.out.println(actualCount);
 
         String actualBookName = ConfigurationReader.getProperty("bookname");
         String actualAuthorName = ConfigurationReader.getProperty("author");
@@ -98,30 +76,17 @@ public class Addbook1 {
         String actualDesc =ConfigurationReader.getProperty("description");
 
 
-        String dbUrl = "jdbc:mysql://34.230.35.214:3306/library2";
-        String dbUserName =  "library2_client";
-        String dbPassword =  "6s2LQQTjBcGFfDhY";
 
-        Connection connectionDb = DriverManager.getConnection(dbUrl, dbUserName, dbPassword);
+        String query = "select * from books where name ='java' order by id desc";
 
-        // Statement helps us to execute query
+        DB_Util.runQuery(query);
+        Map<String, String> rowMap = DB_Util.getRowMap(1);
+        String expectedBookName = rowMap.get("name");
+        String expectedAuthorName = rowMap.get("author");
+        String expectedISBN = rowMap.get("isbn");
+        String expectedDesc = rowMap.get("description");
+        String expectedYear = rowMap.get("year");
 
-        Statement statementDb = connectionDb.createStatement();
-
-        // resultset stores data that we get after query executions
-
-        ResultSet resultSetDb =
-                statementDb.executeQuery("select * from books where name ='java' order by id desc");
-
-        resultSetDb.next();
-
-        String expectedBookName = resultSetDb.getString(2);
-        String expectedAuthorName = resultSetDb.getString(5);
-        String expectedISBN = resultSetDb.getString(3);
-        String expectedYear = resultSetDb.getString(4);
-        String expectedDesc = resultSetDb.getString(7);
-
-        System.out.println(resultSetDb.getString(1));
         // assertions
 
         Assert.assertEquals(expectedBookName,actualBookName);
@@ -130,14 +95,6 @@ public class Addbook1 {
         Assert.assertEquals(expectedDesc,actualDesc);
         Assert.assertEquals(expectedYear,actualYear);
 
-
-
-        resultSetDb.close();
-        statementDb.close();
-        connectionDb.close();
-
-
-        Driver.closeDriver();
     }
 
 

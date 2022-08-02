@@ -1,9 +1,15 @@
 package Libarary.Book.Pages;
 
+import Libarary.Book.Utilities.ConfigurationReader;
 import Libarary.Book.Utilities.Driver;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class BookPage {
     public BookPage() {
@@ -58,6 +64,23 @@ public class BookPage {
     @FindBy (xpath ="//div[@class=\"dropdown-divider\"]")
     public WebElement logout2;
 
+    WebDriverWait wait = new WebDriverWait(Driver.getDriver(),10);
+    WebDriver driver = Driver.getDriver();
+
+    public void addBookInfo(){
+        wait.until(ExpectedConditions.visibilityOf(bookName));
+        bookName.sendKeys(ConfigurationReader.getProperty("bookname"));
+        wait.until(ExpectedConditions.visibilityOf(ISBN));
+        ISBN.sendKeys(ConfigurationReader.getProperty("isbn"));
+        wait.until(ExpectedConditions.visibilityOf(Year));
+        Year.sendKeys(ConfigurationReader.getProperty("year"));
+        wait.until(ExpectedConditions.visibilityOf(Author));
+        Author.sendKeys(ConfigurationReader.getProperty("author"));
+        Select bookCategory = new Select(driver.findElement(By.xpath("//select[@id=\"book_group_id\"]")));
+        bookCategory.selectByVisibleText(ConfigurationReader.getProperty("bookcategory"));
+        wait.until(ExpectedConditions.visibilityOf(Description));
+        Description.sendKeys(ConfigurationReader.getProperty("description"));
+    }
 
 
 }
