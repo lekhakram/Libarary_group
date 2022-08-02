@@ -100,18 +100,7 @@ public class Addbook1 {
 
     @When("Librarian enters valid {string} and {string} and click sign in")
     public void librarianEntersValidAndAndClickSignIn(String username, String password) {
-        wait.until(ExpectedConditions.visibilityOf(loginPage.username));
-        loginPage.username.sendKeys(username);
-        wait.until(ExpectedConditions.visibilityOf(loginPage.password));
-        loginPage.password.sendKeys(password);
-        wait.until(ExpectedConditions.visibilityOf(loginPage.submit));
-        loginPage.submit.click();
-        wait.until(ExpectedConditions.titleIs("Library"));
-        String actualTitle = Driver.getDriver().getTitle();
-        String expectedTitle = "Library";
-        Assert.assertEquals("Title verification Failed", expectedTitle, actualTitle);
-
-
-
+        loginPage.login(username, password);
+        loginPage.tileVerify();
     }
 }

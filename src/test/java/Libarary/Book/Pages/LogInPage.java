@@ -22,9 +22,7 @@ public class LogInPage {
 
         PageFactory.initElements(Driver.getDriver(), this);
 
-
     }
-
 
     @FindBy(xpath ="//input[@id=\"inputEmail\"]")
     public WebElement username;
@@ -36,7 +34,7 @@ public class LogInPage {
     public WebElement submit;
 
 
-    WebDriverWait wait = new WebDriverWait(Driver.getDriver(),10);
+    WebDriverWait wait = new WebDriverWait(Driver.getDriver(),20);
     WebDriver driver = Driver.getDriver();
 
     public void logIn() {
@@ -46,11 +44,21 @@ public class LogInPage {
         submit.click();
         Driver.getDriver().manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
+    public  void login(String UserName, String Password){
+        wait.until(ExpectedConditions.visibilityOf(username));
+        username.sendKeys(UserName);
+        wait.until(ExpectedConditions.visibilityOf(password));
+        password.sendKeys(Password);
+        wait.until(ExpectedConditions.visibilityOf(submit));
+        submit.click();
+
+    }
 
     public void tileVerify(){
-        String actualTitle = Driver.getDriver().getTitle();
+
         String expectedTitle = "Library";
         wait.until(ExpectedConditions.titleIs("Library"));
+        String actualTitle = Driver.getDriver().getTitle();
         Assert.assertEquals("Title verification Failed", expectedTitle, actualTitle);
     }
 }
