@@ -274,6 +274,7 @@ public class DB_Util {
             } catch (Exception e) {
                 System.out.println("ERROR OCCURRED WHILE getColumnDataAsList " + e.getMessage() );
                 System.out.println();
+                System.out.println();
             }finally {
                 resetCursor();
             }
