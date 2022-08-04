@@ -273,6 +273,7 @@ public class DB_Util {
 
             } catch (Exception e) {
                 System.out.println("ERROR OCCURRED WHILE getColumnDataAsList " + e.getMessage() );
+                System.out.println();
             }finally {
                 resetCursor();
             }
@@ -280,8 +281,8 @@ public class DB_Util {
 
             return columnDataLst ;
 
-        }
 
+        }
         /**
          * getting entire column data as list according to column Name
          * @param columnName column name to get all data
@@ -366,7 +367,6 @@ public class DB_Util {
             }finally {
                 resetCursor();
             }
-
 
             return rowMap ;
         }
